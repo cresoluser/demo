@@ -21,8 +21,8 @@ jobs:
 
       - name: Deploy to Production
         run: |
-          git config --global user.email "your-email@example.com"
-          git config --global user.name "Your Name"
+          git config --global user.email "cresoluser@gmail.com"
+          git config --global user.name "cresoluser"
           git checkout production
           git merge development --no-ff --no-edit
           git push origin production
