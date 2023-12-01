@@ -22,7 +22,7 @@ jobs:
       - name: Push to Development Branch
         run: |
           git checkout -b development-branch
-          git push origin development-branch
+          git push -f origin development-branch
 
   deploy_to_prod:
     needs: deploy_to_dev
@@ -37,4 +37,4 @@ jobs:
       - name: Push to Production Branch
         run: |
           git checkout -b production-branch
-          git push origin production-branch
+          git push -f origin production-branch
