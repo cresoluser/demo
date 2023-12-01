@@ -1,30 +1,40 @@
-name: Deploy to Production
+name: PHP CI/CD Workflow
 
-on:
-  push:
-    branches:
-      - development
+on: [push]
 
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+      # Add steps here to set up PHP, install dependencies, and run tests if applicable
 
-      - name: Install Dependencies
-        run: npm install   # Adjust based on your application's requirements
-
-      - name: Build and Test
-        run: npm test      # Adjust based on your application's requirements
-
-      - name: Deploy to Production
+  deploy_to_dev:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Git to use the token
         run: |
-          git config --global user.email "cresoluser@gmail.com"
-          git config --global user.name "cresoluser"
-          git checkout production
-          git merge development --no-ff --no-edit
-          git push origin production
-        env:
-          CI: true
+          git config user.name "cresoluser"
+          git config user.email "cresoluser@gmail.com"
+          git remote set-url origin https://x-access-token:${{ secrets.CICD }}@github.com/cresoluser/demo.git
+      - name: Push to Development Branch
+        run: |
+          git checkout -b development-branch
+          git push origin development-branch
+
+  deploy_to_prod:
+    needs: deploy_to_dev
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Git to use the token
+        run: |
+          git config user.name "cresoluser"
+          git config user.email "cresoluser@gmail.com"
+          git remote set-url origin https://x-access-token:${{ secrets.CICD }}@github.com/cresoluser/demo.git
+      - name: Push to Production Branch
+        run: |
+          git checkout -b production-branch
+          git push origin production-branch
