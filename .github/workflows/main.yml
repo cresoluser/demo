@@ -1,0 +1,30 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - development
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: npm install   # Adjust based on your application's requirements
+
+      - name: Build and Test
+        run: npm test      # Adjust based on your application's requirements
+
+      - name: Deploy to Production
+        run: |
+          git config --global user.email "your-email@example.com"
+          git config --global user.name "Your Name"
+          git checkout production
+          git merge development --no-ff --no-edit
+          git push origin production
+        env:
+          CI: true
